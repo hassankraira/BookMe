@@ -1,0 +1,118 @@
+body{
+
+    background-color: #0a0a0f !important;
+}
+body::-webkit-scrollbar {
+    display: none;
+    min-height: 100vh;
+
+}
+
+/* ================= Flatpickr Dark Theme ================= */
+
+/* Calendar popup container */
+.flatpickr-calendar {
+    background-color: #0a0a0f !important; /* black background */
+    color: white !important;             /* white text */
+    border: 2px solid #ff9900;           /* accent border */
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(255, 79, 163, 0.3);
+    font-family: "Poppins", sans-serif;
+    z-index: 9999;
+  }
+  
+  /* Header: month, year and arrows */
+  .flatpickr-months {
+    background-color: #0a0a0f !important;
+    color: white !important;
+    border-bottom: 1px solid #ff9900;
+  }
+  
+  .flatpickr-prev-month svg,
+  .flatpickr-next-month svg {
+    fill: white !important; /* arrows color */
+  }
+  
+  /* Weekdays */
+/* Weekday labels (Sun, Mon, Tue, ...) */
+.flatpickr-weekdays,
+.flatpickr-weekdays .flatpickr-weekday {
+  background-color: #0a0a0f !important; /* black background */
+  color: white !important;               /* white text */
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+  /* Individual days */
+  .flatpickr-day {
+    background: none !important;
+    color: white !important;
+    border-radius: 8px;
+    transition: 0.2s;
+  }
+  
+  /* Disabled days */
+  .flatpickr-day.flatpickr-disabled {
+    color: #555 !important;
+    opacity: 0.5;
+  }
+  
+  /* Today */
+  .flatpickr-day.today {
+    border: 1px solid #ff9900 !important;
+  }
+  
+  /* Hover effect */
+  .flatpickr-day:hover {
+    background-color: #ff9900 !important;
+    color: #0a0a0f !important;
+    cursor: pointer;
+  }
+  
+  /* Selected day */
+  .flatpickr-day.selected {
+    background: #ff005c !important; /* pinkish gradient tone */
+    color: white !important;
+  }
+  
+  /* Next / Previous Month day */
+  .flatpickr-day.prevMonthDay,
+  .flatpickr-day.nextMonthDay {
+    color: #888 !important;
+  }
+  
+  /* Month dropdown */
+  .flatpickr-monthDropdown-months {
+    background-color: #0a0a0f !important;
+    color: white !important;
+  }
+  
+  /* Year input */
+  .flatpickr-current-month .cur-year {
+    background-color: #0a0a0f !important;
+    color: white !important;
+    border-radius: 6px;
+    padding: 2px 5px;
+  }
+  
+  /* Hide default flatpickr outline */
+  .flatpickr-calendar:focus {
+    outline: none !important;
+  }
+  /* Year input arrows */
+.flatpickr-current-month .arrowUp,
+.flatpickr-current-month .arrowDown {
+  border-color: white !important; /* makes the arrow triangles white */
+  width: 18%;
+  height: 8px;
+  background: white;
+  fill: white;
+  color: white;
+  cursor: pointer;
+}
+
+/* Optional hover effect */
+.flatpickr-current-month .arrowUp:hover,
+.flatpickr-current-month .arrowDown:hover {
+  color: white;
+}

@@ -1,0 +1,75 @@
+<div *ngIf="thisService; else notfound" class="slected-service">
+  <div class="service-info">
+    <img [src]="thisService.imageUrl" [alt]="thisService.name" />
+    <h1>{{ thisService.name }}</h1>
+    <p class="service-desc">{{ thisService.description }}</p>
+    <p class="service-desc">Days off: {{ thisService.DAYS_OFF }}</p>
+    <p class="service-desc">
+      Time available: {{ thisService.START_TIME }} to {{ thisService.END_TIME }}
+    </p>
+    <p class="price">
+      <span class="amount">{{ thisService.phone }}</span>
+    </p>
+  </div>
+
+  <!-- ✅ Template-driven form -->
+  <form class="booking-form" #bookingForm="ngForm" (ngSubmit)="bookAppointment()">
+    <h2>Book Your Appointment</h2>
+
+    <input [(ngModel)]="booking.name" name="name" type="text" placeholder="Enter your name" required />
+    <input [(ngModel)]="booking.email" name="email" type="email" placeholder="Enter your email" required />
+
+    <div class="row">
+      <div>
+        <input
+        type="text"
+        id="appointmentDate"
+        #appointmentDateInput
+        [(ngModel)]="booking.appointmentDate"
+        name="appointmentDate"
+        placeholder="Select date"
+        required
+      />
+      </div>
+      <div>
+        <select [(ngModel)]="booking.appointmentTime" name="appointmentTime" required>
+          <option value="" disabled>Select time</option>
+          <option *ngFor="let slot of timeSlots" [value]="slot">
+            {{ slot }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <textarea [(ngModel)]="booking.notes" name="notes" placeholder="Any specific concerns or requests"></textarea>
+
+    <button type="submit" class="book-btn" >
+      Confirm Booking
+    </button>
+  </form>
+</div>
+
+<div class="category-section">
+  <h1 class="category-title">More services From {{ moreServices[0]?.[6] }}</h1>
+  <div class="service-grid" *ngIf="moreServices.length; else notfound">
+    <div class="service-card" *ngFor="let s of moreServices">
+      <img [src]="s[7] || 'assets/bookme.png'" [alt]="s[1]" />
+      <h2 class="name">{{ s[1] }}</h2>
+      <p class="desc"><strong>Description: </strong> <b>{{ s[2] }}</b></p>
+      <p><strong>Provider Name:</strong> {{ s[4] }}</p>
+      <p><strong>Provider Phone Number:</strong> {{ s[5] }}</p>
+      <button
+        class="btn btn-primary book-btn"
+        type="button"
+        (click)="choseOne()"
+        [routerLink]="['/Services', s[6], s[0], s[1]]"
+      >
+        Book Now
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #notfound>
+  404 service not found
+</ng-template>

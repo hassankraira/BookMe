@@ -1,0 +1,53 @@
+<nav class="navv"[class.visible]="isNavVisible" [class.at-top]="isAtTop">
+
+  <ul>
+    
+    <a routerLink="/Home" >
+      <h1  class="logo"><span class="logoo">B</span>BookMe</h1>
+    </a>
+    <div class="list" >
+    <li><a [class.active]="this.currentRoute.includes('/Home')" (click)="searchon(false)" routerLink="/Home" >Home</a></li>
+    <li><a [class.active]="this.currentRoute.includes('/Services')"(click)="searchon(false)" routerLink="/Services" >Service</a></li>
+    <li><a [class.active]="this.currentRoute.includes('/Booked')" (click)="searchon(false)" routerLink="/Booked">Booked</a></li>
+    <li><a [class.active]="this.currentRoute.includes('/MyAccount')" (click)="searchon(false)" routerLink="/MyAccount">My account</a></li>
+  </div>
+    <a   (click)="searchon(true)" class="input" id="serch" type="text" readonly>Search...</a>
+  </ul>
+ 
+
+</nav>
+
+<div>
+<a class="imgbast center"   routerLink="/Home">
+  <h1  class="logo"><span class="logoo">B</span>BookMe</h1>
+</a>
+
+
+
+<div class="side-menu" >
+  
+  <button class="menu-close btn" (click)="closeMenu()"><span class="logoo">x</span></button>
+
+  <a (click)="searchon(false)" (click)="closeMenu()"  class="selected" routerLink="/Home">Home</a>
+  <a (click)="searchon(false)" (click)="closeMenu()" routerLink="/Services">Services</a>
+  <a (click)="searchon(false)" (click)="closeMenu()"  routerLink="/Booked">Booked</a>
+  <a (click)="searchon(false)" (click)="closeMenu()"  routerLink="/MyAccount">My Account</a>
+  <a class="input" (click)="closeMenu()" (click)="searchon(true)" id="serch" type="text">Search...</a>
+  <button routerLink="Provide"  (click)="closeMenu()"  class="btn2 btn btn-primary">Provide a Services</button>
+
+  <a>
+    <h1  class="logo"> <span class="logoo">B</span> BookMe</h1>
+  </a>
+
+</div>
+
+<button class="menu-toggle btn" (click)="openMenu()"><span class="logoo">☰</span></button>
+<app-search *ngIf="isSearchon"  (closeSearch)="isSearchon = false"></app-search>
+<ng-container *ngIf="!isSearchon">
+  <main [@routeAnimations]="prepareRoute(outlet)">
+    <router-outlet #outlet="outlet"></router-outlet>
+<app-loading></app-loading>
+  </main>
+</ng-container>
+
+<app-footer *ngIf="!isSearchon"></app-footer>

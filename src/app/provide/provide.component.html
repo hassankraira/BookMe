@@ -1,0 +1,279 @@
+<div class="admin-container" *ngIf="user.type === 'provider'">
+
+  <div class="Message" *ngIf="message">
+    <h3>{{message}}</h3>
+    <button (click)="ok()" class="btn btn-primary">OK</button>
+  </div>
+
+    <div class="sidebar" >
+      <h2> Dashboard <a style="color: white;" class="btn hiden" (click)="toggleSidebarItems()">{{ showSidebarItems ? '▼' : '▲' }}</a></h2>
+      <ul [ngClass]="{ 'collapsed': !showSidebarItems }">
+        <li [class.active]="currentTab === 'list'" (click)="setTab('list')">📋 MY Services</li>
+        <li [class.active]="currentTab === 'add'" (click)="setTab('add')">➕ Add a new service</li>
+        <li [class.active]="currentTab === 'edit'" (click)="setTab('edit')">✏️ Edit a service</li>
+        <li [class.active]="currentTab === 'remove'" (click)="setTab('remove')">🗑️ Remove a service</li>
+        <li [class.active]="currentTab === 'BookedApointment'" (click)="setTab('BookedApointment')">📅 Booked Apointment</li>
+
+  
+      </ul>
+    </div>
+     
+    <!-- Main Content -->
+    <div class="admin-content">
+      
+      <!-- خدماتي -->
+      <div class="tab-content" *ngIf="currentTab === 'list'">
+          <h2>My services</h2>
+          <div class="service-grid">
+          <div *ngIf="thisUserServices.length==0">
+            <h3 style="color: white;">No services yet</h3>
+            </div>
+          <div class="service-card" *ngFor="let s of thisUserServices">
+            <img [src]="s.IMG_URL || 'assets/bookme.png'" alt="{{s.SERVICE_NAME}}">
+            <h3>{{ s.SERVICE_NAME }}</h3>
+            <p class="desc"><strong>Description: </strong>  <b> {{ s.DESCRIPTION }}</b></p>
+            <p><strong>category:</strong> {{ s.CATEGORY }}</p>
+            <p><strong> Days OFF:</strong> {{ s.days_off.toString() }}</p>
+            <p> <strong>Times availabe: </strong> {{s.start_time+" to " +s.end_time}}</p>
+            <button class="btn book-btn btn-primary" type="button" (click)="chosenservice(s.ID)">Edit this service</button>
+  
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content flexrow" *ngIf="currentTab === 'add'">   
+        <h2>Add a new Service</h2>
+
+         <div class="newnew">
+        <div class="addnew">
+      
+          <form class="form-container expanded" (ngSubmit)="submitService()">
+            <!-- Service Name -->
+            <input type="text" [(ngModel)]="service.service_name" name="name" placeholder="Service Name" required />
+          
+            <!-- Description -->
+            <textarea [(ngModel)]="service.description" name="desc" placeholder="Description"></textarea>
+          
+            <!-- Category -->
+           
+          
+            <div class="row2">
+              <select [(ngModel)]="service.category" name="category" required>
+                <option value="" disabled selected>Select a category</option>
+                <option *ngFor="let cn of catName" [value]="cn">{{ cn }}</option>
+              </select>
+           <div class="form-select-multi" (click)="$event.stopPropagation()">
+             <div class="select-box" (click)="toggleDaysDropdown()">
+               <span class="selected-text">
+                 {{ service.days_off && service.days_off.length ? service.days_off.join(', ') : 'Choose days off' }}
+               </span>
+               <span  class="arrow"></span>
+             </div>
+           
+             <div class="options" *ngIf="daysDropdownOpen">
+               <label *ngFor="let day of days" class="option">
+                 <input
+                   type="checkbox"
+                   [checked]="service.days_off.includes(day)"
+                   (change)="toggleDayOff(day, $event)"
+                 />
+                 <span class="opt-label">{{ day }}</span>
+               </label>
+             </div>
+           </div>
+
+           
+            </div>
+          
+            <!-- Availability (Times) -->
+            <div class="row">
+              <input type="text" placeholder="First appointment" onfocus="(this.type='time')"  onblur="(this.type='text')" [(ngModel)]="service.start_time" name="start_time" required />
+              <input type="text" placeholder="Last appointment" onfocus="(this.type='time')"  onblur="(this.type='text')" [(ngModel)]="service.end_time" name="end_time" required />
+              <input type="number" [(ngModel)]="service.session_length" name="session_length" placeholder="Session length (min)" required />
+            </div>
+          
+            <!-- Image Upload -->
+            <input type="file" (change)="onFileSelected($event)" name="img" accept="image/png, image/jpeg, image/jpg, image/webp" />
+          
+            <!-- Submit -->
+            <button class="btn book-btn btn-primary" [disabled]="disabled" type="submit">Publish</button>
+          </form>
+          
+      </div>
+  
+      </div>
+  
+    </div>
+
+     <div class="searcinput" *ngIf="currentTab=='edit'">  
+          <input #searchinput  [(ngModel)]="searchTerm"  (input)="onSearchChange(searchTerm)"  placeholder="Search service..."   />
+       </div>
+       
+  
+  
+      <div class="tab-content flexrow"  *ngIf="currentTab === 'edit'">
+     
+     
+   
+         <div class="newnew">    
+      <div class="addnew" *ngIf="serviceToEdit.length!=0&&searchTerm==''">
+    
+      <form class="form-container expanded" (ngSubmit)="submitserviceChanges()">
+        <input type="text" [(ngModel)]="serviceToEdit[0].service_name" name="name" placeholder="Service Name" required />
+        <textarea [(ngModel)]="serviceToEdit[0].description" name="desc" placeholder="Description"></textarea>
+      
+        <div class="row2">
+          <select [(ngModel)]="serviceToEdit[0].category" name="category">
+            <option *ngFor="let cn of catName" [value]="cn">{{ cn }}</option>
+          </select>
+          <div class="form-select-multi" (click)="$event.stopPropagation()">
+            <div class="select-box" (click)="toggleDaysDropdown()">
+              <span class="selected-text">
+                {{ serviceToEdit[0].days_off && serviceToEdit[0].days_off.length ? serviceToEdit[0].days_off.join(', ') : 'Choose days off' }}
+              </span>
+              <span  class="arrow"></span>
+            </div>
+          
+            <div class="options" *ngIf="daysDropdownOpen">
+              <label *ngFor="let day of days" class="option">
+                <input
+                  type="checkbox"
+                  [checked]="serviceToEdit[0].days_off.includes(day)"
+                  (change)="toggleDayOff2(day, $event)"
+                />
+                <span class="opt-label">{{ day }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <input type="time" [(ngModel)]="serviceToEdit[0].start_time" name="start_time" required />
+          <input type="time" [(ngModel)]="serviceToEdit[0].end_time" name="end_time" required />
+          <input type="number" [(ngModel)]="serviceToEdit[0].session_length" name="session_length" placeholder="Session length (min)" required />
+        </div>
+               <input type="file" (change)="onFileSelected2($event)" name="img" accept="image/png, image/jpeg, image/jpg, image/webp" placeholder="أختر صورة" />
+        <button [disabled]="disabled" class="btn book-btn" type="submit">Submit Changes</button>
+      </form>
+    </div>
+   
+         </div>
+         <div class="service-grid" *ngIf="editThisService==0||searchTerm!==''">
+          <div class="service-card"  *ngFor="let s of searchResults"(click)="chosenservice(s.ID)">
+           <img [src]="s.IMG_URL" alt="{{ s.IMG_URL }}">
+           <h3>{{ s.SERVICE_NAME }}</h3>
+           <p class="desc"><strong>Description: </strong>  <b> {{ s.DESCRIPTION }}</b></p>
+           <p><strong>category:</strong> {{ s.CATEGORY }}</p>
+           <p><strong> Days available:</strong> {{ s.DAYS_AVAILABLE }}</p>
+         </div>
+          </div>
+  
+  </div>
+  
+  <div class="searcinput" *ngIf="currentTab=='remove'">  
+    <input #searchinput  [(ngModel)]="searchTerm"  (input)="onSearchChange(searchTerm)"  placeholder="Search service..."   />
+  </div>
+  
+  
+  
+  <div class="tab-content" style="flex-direction: row; gap: 5%;"  *ngIf="currentTab === 'remove'">
+  
+  
+  <div class="service-grid" *ngIf="editThisService==0||searchTerm!==''">
+  <div class="service-card"  *ngFor="let s of searchResults">
+  <img [src]="s.IMG_URL || 'assets/bookme.png'" alt="{{s.SERVICE_NAME}}">
+  <h3>{{ s.SERVICE_NAME }}</h3>
+  <p class="desc"><strong>Description: </strong>  <b> {{ s.DESCRIPTION }}</b></p>
+  <p><strong>category:</strong> {{ s.CATEGORY }}</p>
+  <p><strong> Days available:</strong> {{ s.DAYS_AVAILABLE }}</p>
+  <button (click)="remove(s.ID,s.SERVICE_NAME)"  type="button" class="btn btn-danger">Remove this service</button>
+  </div>
+  </div>
+  
+  
+  
+  
+  
+  </div>
+  
+  
+  
+  <div class="booked-container">
+    <div class="tab-content flexrow"  *ngIf="currentTab === 'BookedApointment'">
+
+  <h2 style="font-size: 3rem;">Provider Schedule</h2>
+
+  <div class="tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'upcoming'" (click)="activeTab = 'upcoming'">Upcoming</button>
+    <button class="tab-btn" [class.active]="activeTab === 'past'" (click)="activeTab = 'past'">Past</button>
+  </div>
+
+  <div *ngIf="activeTab === 'upcoming'">
+    <table class="bookings-table" *ngIf="upcomingAppointments.length > 0; else noUpcoming">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Duration</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of upcomingAppointments">
+          <td data-label="Customer">{{ a.CUSTOMER_NAME }}</td>
+          <td data-label="Service">{{ a.SERVICE_NAME }}</td>
+          <td data-label="Date">{{ a.APPOINTMENT_DATE | date:'dd-MM-yyyy' }}</td>
+          <td data-label="Time">{{ ('1970-01-01T' + a.APPOINTMENT_TIME + ':00') | date:'hh:mm a' }}</td>
+          <td data-label="Duration">{{ a.DURATION_MINUTES }} min</td>
+          <td data-label="Notes">{{ a.NOTES || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noUpcoming>
+      <p  class="empty-msg">No upcoming appointments.</p>
+    </ng-template>
+  </div>
+
+  <div *ngIf="activeTab === 'past'">
+    <table class="bookings-table" *ngIf="pastAppointments.length > 0; else noPast">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Duration</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of pastAppointments">
+          <td data-label="Customer">{{ a.CUSTOMER_NAME }}</td>
+          <td data-label="Service">{{ a.SERVICE_NAME }}</td>
+          <td data-label="Date">{{ a.APPOINTMENT_DATE | date:'dd-MM-yyyy' }}</td>
+          <td data-label="Time">{{ ('1970-01-01T' + a.APPOINTMENT_TIME + ':00') | date:'hh:mm a' }}</td>
+          <td data-label="Duration">{{ a.DURATION_MINUTES }} min</td>
+          <td style="overflow: auto;scrollbar-width: none;" data-label="Notes">{{ a.NOTES || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noPast>
+      <p class="empty-msg">No past appointments.</p>
+    </ng-template>
+  </div>
+</div>
+
+  
+  </div>
+  
+  </div>
+  
+  
+  
+    </div>
+  
+  <div class="becomeProvider" *ngIf="user.type !== 'provider'">
+    <a class="btn btn-light" routerLink="/BecomeProvider">Become a provider</a>
+  </div>
+  

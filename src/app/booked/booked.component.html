@@ -1,0 +1,63 @@
+<div class="booked-container">
+  <h2>Your Bookings</h2>
+
+  <div class="tabs">
+      <button class="tab-btn" [class.active]="activeTab === 'upcoming'" (click)="activeTab = 'upcoming'">Upcoming</button>
+      <button class="tab-btn" [class.active]="activeTab === 'previous'" (click)="activeTab = 'previous'">Previous</button>
+    </div>
+  <div *ngIf="activeTab === 'upcoming'">
+    <table class="bookings-table" *ngIf="upcomingBookings.length > 0; else noUpcoming">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Duration</th>
+          <th>Notes</th>
+          <th>Provider</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of upcomingBookings">
+          <td data-label="Service">{{ booking.SERVICE_NAME }}</td>
+          <td data-label="Date">{{ booking.APPOINTMENT_DATE | date: 'dd-MM-yyyy' }}</td>
+          <td data-label="Time">{{ ('1970-01-01T' + booking.APPOINTMENT_TIME + ':00') | date:'hh:mm a' }}</td>
+          <td data-label="Duration">{{ booking.DURATION_MINUTES }} min</td>
+          <td data-label="Notes">{{ booking.NOTES ? booking.NOTES.slice(0, 50) : '-' }}</td>
+          <td data-label="Provider">{{ booking.PROVIDER_NAME }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noUpcoming>
+      <p class="empty-msg">No upcoming bookings.</p>
+    </ng-template>
+  </div>
+
+  <div *ngIf="activeTab === 'previous'">
+    <table class="bookings-table" *ngIf="previousBookings.length > 0; else noPrevious">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Duration</th>
+          <th>Notes</th>
+          <th>Provider</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of previousBookings">
+          <td data-label="Service">{{ booking.SERVICE_NAME }}</td>
+          <td data-label="Date">{{ booking.APPOINTMENT_DATE | date: 'dd-MM-yyyy' }}</td>
+          <td data-label="Time">{{ ('1970-01-01T' + booking.APPOINTMENT_TIME + ':00') | date:'hh:mm a' }}</td>
+          <td data-label="Duration">{{ booking.DURATION_MINUTES }} min</td>
+          <td data-label="Notes">{{ booking.NOTES || '-' }}</td>
+          <td data-label="Provider">{{ booking.PROVIDER_NAME }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noPrevious>
+      <p  class="empty-msg">No previous bookings.</p>
+    </ng-template>
+  </div>
+</div>

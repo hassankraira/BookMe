@@ -1,0 +1,23 @@
+<div class="services-section" id="services">
+
+  <div class="container">
+    <h2 class="section-title">Our Services</h2>
+    <p class="section-subtitle">Choose from our wide range of appointment services</p>
+
+
+    <div class="services-grid">
+      
+      <div class="service-card" *ngFor="let c of categories" routerLink="/Services/{{c.Name}}">
+        <div class="icon-circle">
+          <div class="icon">{{ c.icon }}</div>
+          
+        </div>
+                <h3>{{c.Name}}</h3>
+              
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

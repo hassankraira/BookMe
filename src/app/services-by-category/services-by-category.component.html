@@ -1,0 +1,23 @@
+<div class="category-section"  >  
+  <h2 class="category-title">{{ category }}</h2>
+<p class="category-subtitle">Find and book appointments with our top {{category}}</p>
+
+<div class="service-grid" *ngIf="services.length; else noData">
+<div class="service-card"  *ngFor="let s of services" >
+ <img [src]="s.IMG_URL || 'assets/bookme.png'" alt="{{s.SERVICE_NAME}}">
+ <h2 class="name">{{ s.SERVICE_NAME }}</h2>
+ <p class="desc"><strong>Description: </strong>  <b> {{ s.DESCRIPTION }}</b></p>
+ <p><strong>Provider Name:</strong> {{s.PROVIDER_NAME}}</p>
+ <p><strong>Provider Phone Number:</strong> {{s.PROVIDER_NUMBER}}</p>
+ <p><strong>Days off :</strong> {{s.DAYS_OFF.toString()}}</p>
+ <p><strong>Times availabe: </strong> {{s.START_TIME + " to " + s.END_TIME}}</p>
+
+ <button class="btn btn-primary book-btn" type="button" [routerLink]="s.ID + '/'+s.SERVICE_NAME">Book Now</button>
+</div>
+
+</div>
+
+<ng-template class="ng-template"  #noData>
+<p class="ng-template">No services found in this category.</p>
+</ng-template>
+</div>

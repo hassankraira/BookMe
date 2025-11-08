@@ -1,0 +1,166 @@
+.container2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10% 10%;
+  gap: 5%;
+}
+.info , .edit-card {
+  display: flex;
+  flex-direction: column;
+  border: double 3px transparent;
+  border-radius: 12px;
+  background-image: linear-gradient(#0a0a0f, #0a0a0f), linear-gradient(90deg, rgba(250, 134, 4, 1), rgba(249, 0, 209, 1));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  outline: none;
+  cursor: text;
+  padding: 2% 5%;
+  text-align: center;
+  width: 40%;
+  color: white;
+}
+/* Animate edit card appearance */
+.edit-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: showEditCard 0.4s ease forwards;
+}
+.container2.back .info{
+  animation: moveInfoRight 0.4s ease forwards;
+
+}
+
+
+@keyframes showEditCard {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* When edit section is active, push info card to the left */
+.container2.edit-mode  {
+  animation: moveInfoLeft 1s ease forwards;
+}
+
+@keyframes moveInfoLeft {
+  0% {
+gap: 0; 
+ }
+  100% {
+gap: 5%;
+  }
+}
+@keyframes moveInfoRight {
+  0% {
+    transform: translateX(-1%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+.gradient-glow {
+  height: 90vh;
+  aspect-ratio: 1/1;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: linear-gradient(90deg, rgb(155, 83, 0) 0%, rgba(249, 0, 209, 1) 100%);
+  filter: blur(200px);
+  z-index: -1;
+  opacity: 1;
+  animation: rotate-glow 3s ease-in, rotate 18s linear 3s infinite;
+}
+.infoIMG img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.infoDetals {
+  margin-top: 20px;
+}
+.infoDetals h1 {
+  margin: 10px 0 5px;
+  font-size: 1.5rem;
+}
+.infoDetals p {
+  color: #ccc;
+  margin-bottom: 20px;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.btn {
+  background: linear-gradient(90deg, rgba(250, 134, 4, 1), rgba(249, 0, 209, 1));
+  border: none;
+  padding: 12px 0;
+  width: 100%;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom:5% ;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+@media (max-width:850px) {
+  .gradient-glow{
+    height: 40vh;
+    filter: blur(140px);
+  }
+  .info ,.edit-card{
+    padding:5% 2% ;
+    width: 100%;
+    margin-bottom: 5%;
+  }
+  .container2{
+    flex-direction: column;
+    padding: 10% 2% 30% 2%;
+    position: relative;
+  }
+}
+
+h2 {
+  color: white;
+  margin: 10px 0;
+}
+p {
+  color: #ccc;
+}
+
+ input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: white;
+  border: double 3px transparent;
+  border-radius: 12px;
+  background-image: 
+    linear-gradient(#0a0a0f , #0a0a0f ), 
+    linear-gradient(90deg, rgba(250, 134, 4, 1), rgba(249, 0, 209, 1));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  outline: none;
+  cursor: text;
+  transition: background-color 100000s ease-in-out 0s;
+}
+input::placeholder{
+  color: rgba(255, 255, 255, 0.457);
+}

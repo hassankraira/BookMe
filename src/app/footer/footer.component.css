@@ -1,0 +1,229 @@
+.footerFirst {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  font-family: sans-serif;
+  color: white;
+  box-sizing: border-box;
+  padding: 5% 10%;
+  overflow: hidden;
+  z-index: 999;
+  
+  background-color: #0a0a0f;
+  border-top: 2px solid;
+  border-image: linear-gradient(to right, #fa8604, #f900d1) 1;
+}
+
+
+a{
+    text-decoration: none;
+}
+
+
+.logo {
+  font-family: sans-serif;
+  justify-content: start;
+  text-align: center;
+  align-items: center;
+  font-size: 34px;
+  color: #fff;
+  display: flex !important;
+  gap: 2%;
+  fill: #fff;
+  font-weight: 700;
+  height: auto;
+  display: block;
+}
+.son1{
+    width: 30%;
+}
+.son1 h3{
+font-weight: 700;
+font-size: 26px;
+color: white;
+margin-bottom: 3%;
+}
+.son1 p{
+    color: rgb(131, 131, 131);
+}
+.son2{
+  display: flex;
+  width: 60%;
+  gap: 10%;
+  padding: 0 8%;
+    
+}
+ul li {
+    margin-top: 10%;
+}
+.navigation ul{
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+
+}
+  .navigation ul h4{
+    background: linear-gradient(90deg, rgba(250, 134, 4, 1) 0%, rgba(249, 0, 209, 1) 100%);
+     -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeIn 2s ease-in-out;
+  }
+.navigation ul li a{
+    color: white;
+}
+a{
+    text-decoration: none;
+}
+li{
+    list-style-type: none;
+}
+
+
+.newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: white;
+    width: 100%;
+    max-width: 250px;
+  }
+  
+    
+    .newsletter h4 {
+      background: linear-gradient(90deg, rgba(250, 134, 4, 1) 0%, rgba(249, 0, 209, 1) 100%);
+       -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeIn 2s ease-in-out;
+    
+  }
+  
+  
+  .newsletter p {
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+  }
+  
+  .newsletter form {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+.newsletter input[type="email"] {
+  padding: 5% 0%;
+  font-size: 14px;
+  font-family: "Comic Sans MS", sans-serif;
+  color: white;
+  border: double 3px transparent;
+  border-radius: 8px;
+  background-image: linear-gradient(#0e0e0e, #0e0e0e), linear-gradient(90deg, rgba(250, 134, 4, 1), rgba(249, 0, 209, 1));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  outline: none;
+  cursor: text;
+}
+
+
+  .newsletter button {
+    padding: 8px;
+    background: radial-gradient(circle at center, #ee0979, #ff6a00);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .newsletter button:hover {
+    background-color: #2b6cd4;
+  }
+  .logoo{
+    font-size: 55px;
+    background: linear-gradient(90deg, rgba(250, 134, 4, 1) 0%, rgba(249, 0, 209, 1) 100%);
+     -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeIn 2s ease-in-out;
+  }
+  .footerCopyright {
+    background: linear-gradient(90deg, #ff6a00, #ee0979);
+    color: rgb(131, 131, 131);
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    font-family: sans-serif;
+    border-top: 1px solid #333;
+  }
+.footerCopyright a{
+  color: white;
+}
+.footerCopyright p{
+  
+}
+
+  @media (max-width: 1024px) {
+    .footerFirst {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 8% 5%;
+    }
+  
+    .son1, .son2 {
+      width: 100%;
+    }
+  
+    .son1 {
+      margin-bottom: 30px;
+    }
+  
+    .son2 {
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: 0;
+      gap: 30px;
+    }
+  
+    .navigation ul h4,
+    .newsletter h4 {
+      font-size: 18px;
+    }
+  .navigation{
+    width: 45%;
+  }
+    .navigation ul li a,
+    .newsletter p {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .logo {
+      font-size: 36px;
+    }
+  
+    .son1 h3 {
+      font-size: 20px;
+    }
+  
+    .son1 p {
+      font-size: 13px;
+    }
+  
+    .newsletter form {
+      flex-direction: column;
+    }
+  
+    .newsletter input[type="email"],
+    .newsletter button {
+      width: 100%;
+    }
+  
+    .footerCopyright {
+      font-size: 13px;
+      padding: 15px 10px;
+    }
+  }
+  

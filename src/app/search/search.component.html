@@ -1,0 +1,17 @@
+<div class="searchon"  >
+   <div class="searcinput">
+   <button class="menu-close btn" (click)="onCloseClick()">×</button>
+   <input #searchinput [(ngModel)]="searchTerm" (input)="onSearchChange(searchTerm)" placeholder="Search For Service..."/>
+</div>
+<div class="results">
+
+ <div [routerLink]="'/Services/' + c[6]+'/'+c[0]+'/'+c[1]" [routerLink]="'/Services/' + c[6]+'/'+c[0]+'/'+c[1]"  class="catCards" *ngFor="let c of searchResults" (click)="onCloseClick()">
+
+   <img class="card-img-top" src="{{c[7]}}" alt="{{c.IMG}}">
+   <p [style.color]="'white'" >{{c[1]}}</p>
+   <a [routerLink]="'/Services/' + c[6]+'/'+c[0]+'/'+c[1]" class="btn btn-primary">Show Service</a>
+  </div>
+  </div>
+</div>
+
+ 

@@ -1,0 +1,36 @@
+<div class=" container2" *ngIf="user2" [class.edit-mode]="actvieSection=='edit'" [class.back]="actvieSection===''" >
+
+  <div class="info">
+    <div class="infoIMG">
+      <img [src]="user2.image" [alt]="user2.firstName">
+    </div>
+    <div class="infoDetals">
+      <h1>{{ user2.firstName }} {{ user2.lastName }}</h1>
+      <p>{{ user2.email }}</p>
+      <div class="center">
+        <a class="btn btn-light center" routerLink="/BecomeProvider" *ngIf="user.type !== 'provider'">Become a Provider</a>
+        <a class="btn btn-light center" routerLink="/Provide" *ngIf="user.type === 'provider'">Manage My Services</a>
+      </div>
+      <button class="btn btn-primary" (click)="actvieSection='edit'">Edit profile</button>
+      <button class="btn btn-primary" (click)="logout()">Log Out</button>
+
+    </div>
+
+  </div>
+      <div class="gradient-glow"></div> 
+
+  <div class="edit-card" *ngIf="actvieSection=='edit'" >
+    <h2>Edit Profile</h2>
+    <form (ngSubmit)="updateuser()">
+      <input type="text" [(ngModel)]="user.firstName" name="firstName" placeholder="First Name">
+      <input type="text" [(ngModel)]="user.lastName" name="lastName" placeholder="Last Name">
+      <input type="text" [(ngModel)]="user.phone" name="phone" placeholder="Phone number">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*">
+
+      <button type="submit" class="btn orange-pink">Save Changes</button>
+      
+      <button type="button" class="btn pink-red" (click)="actvieSection=''">Cancel</button>
+    </form>
+  </div>
+
+</div>

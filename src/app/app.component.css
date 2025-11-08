@@ -1,0 +1,290 @@
+.navv {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 35px;
+  position: fixed;
+  top: 0;
+  transition: transform 0.5s ease;
+  z-index: 1001;
+}
+
+/* إخفاء عند النزول */
+
+.visible{
+  transform: translateY(0);
+}
+
+/* شفاف عند القمة */
+.navv.at-top {
+  background-color: transparent;
+}
+.navv:not(.visible) {
+  transform: translateY(-100%)!important;
+}
+.navv.visible:not(.at-top) {
+  background-color: #0a0a0f; 
+}
+
+.logoo{
+  font-size: 55px;
+  background: linear-gradient(90deg, rgba(250, 134, 4, 1) 0%, rgba(249, 0, 209, 1) 100%);
+   -webkit-background-clip: text;
+   background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeIn 2s ease-in-out;
+}
+a{
+  text-decoration: none;
+}
+
+.logo {
+  font-family: sans-serif;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  font-size: 25px;
+  color: #fff;
+  display: flex !important;
+  gap: 5%;
+  fill: #fff;
+  font-weight: 700;
+  height: auto;
+  display: block;
+}
+
+.second{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+ ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+ ul li{
+    list-style-type: none;
+}
+
+ul li a ,.side-menu a {
+  color: white;
+  font-size: 25px;
+  font-family: sans-serif;
+  text-decoration: none;
+  position: relative;
+  font-weight: 700;
+}
+
+ul li a::after,.side-menu a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(250, 134, 4, 1), rgba(249, 0, 209, 1));
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+/* 👇 افعل الخط عند الكلاس active */
+ul li a.active::after,.side-menu a.active::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+.input{
+  outline: none;
+  padding: 10px 100px;
+  background-size: 10%;
+  padding-left: 45px;
+  margin: 10px;
+  font-family: "Comic Sans MS";
+  color: white;
+  box-sizing: border-box;
+  height: 45px;
+  cursor: pointer;
+  width: 12%;
+  border: double 3px transparent;
+  border-radius: 8px;
+  background-image: url(../assets/search.png), linear-gradient(#0e0e0e, #0e0e0e), linear-gradient(90deg, rgba(250, 134, 4, 1) 0%, rgba(249, 0, 209, 1) 100%);
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  background-size: 10%, 100%, 100%;
+  background-position: 5%, 100%;
+  background-clip: border-box, padding-box, border-box;
+    
+
+}
+.btn-primary{
+  background: linear-gradient(to bottom right, #a587e3, #3e188c, #f79222) ;
+}
+.list{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  width: 55%!important;
+}
+.list li{
+  width: 20%;
+}
+.btn{
+    width: 18%;
+    height: 45px;
+    font-weight: 900;
+}
+.sub-nav{
+    display: flex;
+  }
+  .side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #0a0a0f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+  }
+  
+  .side-menu.open {
+    transform: translateX(0);
+  }
+  
+  .menu-toggle {
+    display: none; 
+    z-index: 101;
+  }
+  .side-menu a{
+    color: #ffffff;
+    font-size: 25px;
+  }
+  .side-menu .input{
+    font-size: 14px !important;
+  }
+  .side-menu a h1{
+    font-size: 25px;
+  }
+  .menu-close {
+    align-self: flex-end;
+    font-size: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+  }
+  .menu-close .logoo{
+    font-size: 20px;
+  }
+.imgbast{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.imgbast h1{
+    padding: 3%;
+}
+  @media (min-width: 850px) {
+    .imgbast{
+  display: none;  }
+    .nav-icon {
+      display: block; 
+    }
+  
+    .side-menu {
+      display: none; 
+    }
+  
+    .menu-toggle {
+      display: none; 
+    }
+  }
+  
+@media (max-width: 850px) {
+    .navv{
+  display: none;  }
+    .navv {
+      position: relative; 
+      flex-direction: column;
+    }
+  
+    .nav-icon {
+      display: block;
+      margin: 0 auto;
+    }
+  
+    .main-nav .icon {
+      width: 100px; 
+    }
+  
+    .menu-toggle {
+      display: block;
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 24px !important;
+       color: #3586ff	;
+  
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .menu-toggle .logoo{
+      font-size: 24px;
+    }
+    .input{
+       width: 100%; 
+       font-size: 16px;
+    }
+    .btn2{
+        width: 100%;
+    }
+  }
+  
+
+  @media (min-width: 850px) and (max-width: 1424px) {
+.logo{
+  font-size: 20px;
+}
+.logoo{
+  font-size: 32px;
+}
+.input{
+  padding-left: 30px;
+  font-size: 16px;
+}
+.list{
+  gap: 0%;
+}
+ul li a{
+  font-size: 14px;
+
+}
+
+.list li{
+  width: 23%;
+  display: block;
+}
+.btn{
+  font-size: 12px;
+}
+  }
