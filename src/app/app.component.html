@@ -42,11 +42,12 @@
 </div>
 
 <button class="menu-toggle btn" (click)="openMenu()"><span class="logoo">☰</span></button>
+<app-loading></app-loading>
+
 <app-search *ngIf="isSearchon"  (closeSearch)="isSearchon = false"></app-search>
 <ng-container *ngIf="!isSearchon">
   <main [@routeAnimations]="prepareRoute(outlet)">
     <router-outlet #outlet="outlet"></router-outlet>
-<app-loading></app-loading>
   </main>
 </ng-container>
 
