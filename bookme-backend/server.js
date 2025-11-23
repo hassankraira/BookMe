@@ -454,47 +454,20 @@ app.get('/api/check-subscription/:id', async (req, res) => {
   res.json({ expired: false });
 });
 const multer = require('multer');
-const fs = require('fs');
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueName + path.extname(file.originalname));
-  }
-});
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 }, 
-  fileFilter: (req, file, cb) => {
-    const types = /jpeg|jpg|png|gif|webp/;
-    const isValid = types.test(file.mimetype);
-    if (isValid) cb(null, true);
-    else cb(new Error('Unsupported file type'), false);
-  }
-});
-app.use('/uploads', express.static('uploads')); 
+
+
+const upload = require('./middlewares/multer-cloudinary');
+
 app.post('/api/services/upload', upload.single('image'), async (req, res) => {
   const {
-    service_name,
-    description,
-    provider_id,
-    provider_name,
-    provider_number,
-    category,
-    days_off,
-    session_length,
-    start_time,
-    end_time
+    service_name, description, provider_id,
+    provider_name, provider_number, category,
+    days_off, session_length, start_time, end_time
   } = req.body;
 
-  const img_url = req.file
-    ? `http://localhost:3000/uploads/${req.file.filename}`
-    : 'assets/bookme.png';
-const Daysoff = Array.isArray(days_off)
-    ? days_off.join(',')
-    : (days_off || '');
+  const img_url = req.file ? req.file.path : 'assets/bookme.png';
+  const Daysoff = Array.isArray(days_off) ? days_off.join(',') : (days_off || '');
+
   try {
     const connection = await oracledb.getConnection(dbConfig);
     const result = await connection.execute(
@@ -524,175 +497,181 @@ const Daysoff = Array.isArray(days_off)
       },
       { autoCommit: true }
     );
+
     const newServiceId = result.outBinds.id[0];
-    const newService = {
-      id: newServiceId,
-      service_name,
-      description,
-      provider_id,
-      provider_name,
-      provider_number,
-      category,
-      days_off: Daysoff,  
-      session_length,
-      start_time,
-      end_time,
-      img_url
-    };
+
     res.status(201).json({
       message: '✅ Service added successfully',
-      service: newService
+      service: {
+        id: newServiceId,
+        service_name, description, provider_id, provider_name,
+        provider_number, category, days_off: Daysoff,
+        session_length, start_time, end_time, img_url
+      }
     });
   } catch (err) {
     console.error('Insert error:', err);
     res.status(500).json({ error: 'Database insert error' });
   }
 });
+
 app.post('/api/services/upload-update', upload.single('image'), async (req, res) => {
+  const {
+    id,
+    oldImageUrl,
+    service_name,
+    description,
+    provider_id,
+    provider_name,
+    provider_number,
+    category
+  } = req.body;
+
+  let newImageUrl = oldImageUrl;
+
   try {
-    const {
-      id, service_name, description, provider_id,
-      provider_name, provider_number, category,
-      days_off, start_time, end_time,
-      session_length, oldImageUrl
-    } = req.body;
-    const newImageUrl = req.file
-      ? `http://localhost:3000/uploads/${req.file.filename}`
-      : oldImageUrl;
-    const serviceId = Number(id);
-    const providerId = Number(provider_id);
-    const sessionLength = Number(session_length);
-    const Daysoff = Array.isArray(days_off)
-    ? days_off.join(',')
-    : (days_off || '');
+    // If new file uploaded, get its Cloudinary URL
+    if (req.file) {
+      newImageUrl = req.file.path;
+
+      // Delete old image if exists and not default
+      if (oldImageUrl && !oldImageUrl.includes('assets/bookme.png')) {
+        try {
+          const parts = oldImageUrl.split('/');
+          const filename = parts[parts.length - 1].split('.')[0]; // remove extension
+          const publicId = `bookme/${filename}`;
+          console.log(publicId)
+          await cloudinary.uploader.destroy(publicId);
+          console.log('Old image deleted:', publicId);
+        } catch (err) {
+          console.warn('Failed to delete old image from Cloudinary:', err.message);
+        }
+      }
+    }
+
+    // Update DB
     const connection = await oracledb.getConnection(dbConfig);
     await connection.execute(
-      `UPDATE SERVICES 
-       SET SERVICE_NAME   = :SERVICE_NAME,
-           DESCRIPTION    = :DESCRIPTION,
-           PROVIDER_ID    = :PROVIDER_ID,
-           PROVIDER_NAME  = :PROVIDER_NAME,
-           PROVIDER_NUMBER= :PROVIDER_NUMBER,
-           CATEGORY       = :CATEGORY,
-           DAYS_OFF        = :DAYS_OFF,
-           START_TIME     = :START_TIME,
-           END_TIME       = :END_TIME,
-           SESSION_LENGTH = :SESSION_LENGTH,
-           IMG_URL        = :IMG_URL
-       WHERE ID = :ID`,
+      `UPDATE SERVICES SET 
+         SERVICE_NAME   = :service_name,
+         DESCRIPTION    = :description,
+         PROVIDER_ID    = :provider_id,
+         PROVIDER_NAME  = :provider_name,
+         PROVIDER_NUMBER= :provider_number,
+         CATEGORY       = :category,
+         IMG_URL        = :img_url
+       WHERE ID = :id`,
       {
-        SERVICE_NAME: service_name,
-        DESCRIPTION: description,
-        PROVIDER_ID: providerId,
-        PROVIDER_NAME: provider_name,
-        PROVIDER_NUMBER: provider_number,
-        CATEGORY: category,
-        DAYS_OFF: Daysoff,
-        
-        START_TIME: start_time,
-        END_TIME: end_time,
-        SESSION_LENGTH: sessionLength,
-        IMG_URL: newImageUrl,
-        ID: serviceId
+        service_name,
+        description,
+        provider_id: Number(provider_id),
+        provider_name,
+        provider_number,
+        category,
+        img_url: newImageUrl,
+        id: Number(id)
       },
       { autoCommit: true }
     );
-    if (req.file && oldImageUrl) {
-      try {
-        const filename = oldImageUrl.split('/').pop();
-        fs.unlinkSync(path.join(__dirname, 'uploads', filename));
-      } catch (err) {
-        console.warn('Failed to delete old image:', err.message);
-      }
-    }
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Update error:', error);
-    res.status(500).json({ success: false, error: error.message });
+
+    res.json({ success: true, img_url: newImageUrl });
+  } catch (err) {
+    console.error('Update error:', err);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
+
+
+const cloudinary = require('./config/cloudinary'); // استدعاء Cloudinary config
+const { v2: cloudinaryV2 } = require('cloudinary');
+
 app.post('/api/remove-service', async (req, res) => {
   const ID = req.body.ID;
   let connection;
+
   try {
     connection = await oracledb.getConnection(dbConfig);
+
+    // 1️⃣ Get the image URL first
     const selectResult = await connection.execute(
       `SELECT IMG_URL FROM SERVICES WHERE ID = :id`,
       { id: ID }
     );
     const imgUrl = selectResult.rows.length ? selectResult.rows[0][0] : null;
-    const sql = `DELETE FROM SERVICES WHERE ID = :id`;
-    const result = await connection.execute(sql, { id: ID }, { autoCommit: true });
-    console.log('Service removed successfully:', result.rowsAffected);
+
+    // 2️⃣ Delete all appointments linked to this service
+    await connection.execute(
+      `DELETE FROM APPOINTMENTS WHERE SERVICE_ID = :id`,
+      { id: ID },
+      { autoCommit: true }
+    );
+
+    // 3️⃣ Delete the service itself
+    await connection.execute(
+      `DELETE FROM SERVICES WHERE ID = :id`,
+      { id: ID },
+      { autoCommit: true }
+    );
+    console.log('Service and related appointments removed successfully');
+
+    // 4️⃣ Delete image from Cloudinary if exists and not default
     if (imgUrl && !imgUrl.includes('assets/bookme.png')) {
       try {
-        const filename = imgUrl.split('/').pop(); 
-        const filePath = path.join(__dirname, '', 'uploads', filename);
-        fs.unlinkSync(filePath);
-        console.log('Image file deleted:', filename);
+        const publicId = imgUrl.split('/').pop().split('.')[0]; 
+        await cloudinaryV2.uploader.destroy(`bookme/${publicId}`);
+        console.log('Image deleted from Cloudinary:', publicId);
       } catch (err) {
-        console.warn('Failed to delete image file:', err.message);
+        console.warn('Failed to delete image from Cloudinary:', err.message);
       }
     }
-    res.json({ message: 'Service removed successfully' });
+
+    res.json({ message: 'Service and related appointments removed successfully' });
+
   } catch (err) {
     console.error('Error removing service:', err);
     res.status(500).json({ error: 'Database error' });
   } finally {
     if (connection) {
-      try {
-        await connection.close();
-      } catch (err) {
-        console.error('Error closing connection:', err);
-      }
+      try { await connection.close(); } 
+      catch (err) { console.error('Error closing connection:', err); }
     }
   }
 });
+
+
 app.post('/api/updateUser', upload.single('image'), async (req, res) => {
   const { id, firstName, lastName, phone } = req.body;
   const newName = firstName + ' ' + lastName;
-  const PROVIDER_ID = id;
-  const PROVIDER_NUMBER = phone;
   let connection;
+
   try {
     connection = await oracledb.getConnection(dbConfig);
+
+    // 1️⃣ Get current image URL
     const result = await connection.execute(
       `SELECT USER_IMAGE FROM USERS WHERE ID = :id`,
       { id }
     );
-    const oldImageUrl = result.rows[0]?.[0];
-    let image = oldImageUrl;
+    const oldImageUrl = result.rows.length ? result.rows[0][0] : null;
+
+    // 2️⃣ Handle new uploaded image
+    let img_url = oldImageUrl; // default to old image
     if (req.file) {
-      image = `http://localhost:3000/uploads/${req.file.filename}`;
-      if (
-        oldImageUrl &&
-        oldImageUrl.startsWith('http://localhost:3000/uploads/')
-      ) {
-        const oldFileName = oldImageUrl.split('/').pop();
-        const oldFilePath = path.join(__dirname, 'uploads', oldFileName);
-        fs.unlink(oldFilePath, (err) => {
-          if (err) {
-            if (err.code === 'ENOENT') {
-              console.warn('⚠️ Old image not found:', oldFilePath);
-            } else {
-              console.error('❌ Failed to delete old image:', err);
-            }
-          } else {
-            console.log('🗑️ Old image deleted:', oldFilePath);
-          }
-        });
+      img_url = req.file.path;
+
+      // Delete old image from Cloudinary if exists and not default
+      if (oldImageUrl && !oldImageUrl.includes('assets/bookme.png')) {
+        try {
+          const publicId = oldImageUrl.split('/').pop().split('.')[0];
+          await cloudinaryV2.uploader.destroy(`bookme/${publicId}`);
+          console.log('Old user image deleted:', publicId);
+        } catch (err) {
+          console.warn('Failed to delete old user image from Cloudinary:', err.message);
+        }
       }
     }
-    const sql2 = `
-      UPDATE SERVICES SET 
-      PROVIDER_NAME = :name,
-      PROVIDER_NUMBER = :phone 
-      WHERE PROVIDER_ID = :id`;
-    await connection.execute(sql2, {
-      name: newName,
-      phone: PROVIDER_NUMBER,
-      id: PROVIDER_ID
-    }, { autoCommit: true });
+
+    // 3️⃣ Update user data
     const sql = `
       UPDATE USERS SET 
       USER_FIRSTNAME = :firstName, 
@@ -700,27 +679,40 @@ app.post('/api/updateUser', upload.single('image'), async (req, res) => {
       USER_PHONE = :phone,
       USER_IMAGE = :image
       WHERE ID = :id`;
+
     await connection.execute(sql, {
       firstName,
       lastName,
       phone,
-      image,
+      image: img_url,
       id
     }, { autoCommit: true });
-    res.json({ message: 'User updated successfully', image });
+
+    // 4️⃣ Update services table if user is a provider
+    const sql2 = `
+      UPDATE SERVICES SET 
+      PROVIDER_NAME = :name,
+      PROVIDER_NUMBER = :phone 
+      WHERE PROVIDER_ID = :id`;
+
+    await connection.execute(sql2, { name: newName, phone, id }, { autoCommit: true });
+
+    res.json({ message: 'User updated successfully', image: img_url });
+
   } catch (err) {
     console.error('Error updating user:', err);
     res.status(500).json({ error: 'Database error' });
+
   } finally {
     if (connection) {
-      try {
-        await connection.close();
-      } catch (err) {
-        console.error('Error closing connection:', err);
-      }
+      try { await connection.close(); } 
+      catch (err) { console.error('Error closing connection:', err); }
     }
   }
 });
+
+
+
   app.post('/api/appointments', async (req, res) => {
     try {
       const {

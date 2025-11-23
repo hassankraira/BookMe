@@ -1,4 +1,3 @@
-import { UserComponent } from './../user/user.component';
 import { RouterLink, Router } from '@angular/router';
 import { OnInit, HostListener } from '@angular/core';
 import { Component } from '@angular/core';
