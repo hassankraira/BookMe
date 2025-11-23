@@ -1,5 +1,7 @@
 
 const express = require('express');
+const fs = require('fs');
+const https = require('https');
 const cors = require('cors');
 const oracledb = require('oracledb');
 const path = require('path');
@@ -848,6 +850,11 @@ app.post('/api/updateUser', upload.single('image'), async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
-  app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+  const sslOptions = {
+    key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'ssl', 'cert.pem'))
+  };
+
+  https.createServer(sslOptions, app).listen(3000, '0.0.0.0', () => {
+    console.log('✅ Node.js server running on HTTPS port 3000');
+  });

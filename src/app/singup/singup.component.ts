@@ -49,7 +49,7 @@ export class SingupComponent {
     if (this.user.email !== '' && this.user.firstName !== '') {
       this.sendingOTP = true;
   
-      this.http.post<{ exists: boolean }>('http://13.60.185.130:3000/check-email', {
+      this.http.post<{ exists: boolean }>('https://13.60.185.130:3000/check-email', {
         email: this.user.email
       }).subscribe({
         next: (res) => {
@@ -58,7 +58,7 @@ export class SingupComponent {
             this.successMessage = '';
             this.sendingOTP = false;
           } else {
-            this.http.post('http://13.60.185.130:3000/send-otp', {
+            this.http.post('https://13.60.185.130:3000/send-otp', {
               email: this.user.email
             }).subscribe({
               next: () => {
@@ -106,7 +106,7 @@ export class SingupComponent {
   }
 
   verifyOTP() {
-    this.http.post<any>('http://13.60.185.130:3000/verify-otp', {
+    this.http.post<any>('https://13.60.185.130:3000/verify-otp', {
       email: this.user.email,
       otp: this.enteredOTP
     }).subscribe({
